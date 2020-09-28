@@ -1,30 +1,24 @@
 html{
   width: 100%;
   height: 100%;
-  overflow: auto;
 }
 body{
   width: 100%;
   height: 100%;
-  overflow: auto;
 }
 
 #root{
   width: 100%;
   height:100%;
-  overflow: auto;
 }
 
 .App{
 	display: flex;
 	flex-direction: column;
  	width: 100%;
-  	height:100%;
-  	overflow: auto;
 }
 
-.container-home{
-	width: 100%;
-	height:100%;
-	overflow: auto;
+.post-info{
+	display: flex;
+	flex-direction: column;
 }

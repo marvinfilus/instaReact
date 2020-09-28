@@ -15,14 +15,36 @@ class ImgPost extends Component{
 	}
 
 	componentDidUpdate(){
-
+		// console.log(this.props)
+		// let string = String(this.props.img.downloadURL);
+		// console.log(string)
+		// this.setState({ 
+		// 	pic:string,
+		// 	user:this.props.img
+		// })
+		// console.log(this.state);
 	}
 
 	componentDidMount(){
-		console.log(this.props)
+		// this.stateSet.bind(this);
+			console.log(this.props)
 		let string = String(this.props.img.downloadURL);
 		console.log(string)
-		this.setState({ pic:string})
+		this.setState({ 
+			pic:string,
+			user:this.props.img
+		})
+		console.log(this.state);
+	}
+
+	stateSet = () => {
+			console.log(this.props)
+		let string = String(this.props.img.downloadURL);
+		console.log(string)
+		this.setState({ 
+			pic:string,
+			user:this.props.img
+		})
 		console.log(this.state);
 	}
 

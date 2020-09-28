@@ -20,7 +20,26 @@ class App extends Component {
 
   componentDidMount(){
     const that = this;
-    firebase.auth().onAuthStateChanged(that.setUser.bind(this));
+    firebase.auth().onAuthStateChanged((user)=> {
+      if (user) {
+       this.setState({ user: {email: user.email, uid:user.uid, postedImg:[]}});
+        // console.log(this.state)
+        if (Object.keys(this.state.createdUser).length > 0){
+          base.update(`users/${user.uid}`,{
+            data: {...this.state.createdUser , uid : user.uid}
+          })
+        }
+        base.fetch(`users/${user.uid}`,{
+          context:this,
+          asArray:false,
+          then(data){
+            console.log(data);
+            this.setState({user: {...data}});
+            // console.log(this.state)
+          }
+        })
+      }
+    });
 
   }
 
@@ -56,29 +75,6 @@ class App extends Component {
     });
   }
 
-
-
-  setUser(user){
-    // console.log(user)
-   // if (user) {
-     this.setState({ user: {email: user.email, uid:user.uid }});
-      // console.log(this.state)
-      if (Object.keys(this.state.createdUser).length > 0){
-        base.update(`users/${user.uid}`,{
-          data: {...this.state.createdUser , uid : user.uid}
-        })
-      }
-      base.fetch(`users/${user.uid}`,{
-        context:this,
-        asArray:false,
-        then(data){
-          console.log(data);
-          this.setState({user: {...data}});
-          // console.log(this.state)
-        }
-      })
-    // }
-  }
   render(){
     return (
       <Router>
