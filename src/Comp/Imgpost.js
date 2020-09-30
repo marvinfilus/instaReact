@@ -49,10 +49,23 @@ class ImgPost extends Component{
 	}
 
 	render(){
-		// console.log(this.state)
+		let user = this.state.user
+		console.log(this.state)
 		return(
 			<div className="div-hm">
+				<div className="local-x">
+					<p> {user.location ? ( 'Location: ' + user.location) : ('No Location')} </p>
+					<div className="x-div">
+				  		<div className="mdiv">
+				    		<div className="md"></div>
+						</div>
+					</div>
+				</div>
 				<img className="image-post" src={this.state.pic} />
+				<div>
+					<p>{user.name ? ('Name: ' + user.name) : ('No Name')} </p> 
+					<p> {user.description ? user.description : ('No Description')} </p>
+				</div>
 			</div>
 		)
 	}

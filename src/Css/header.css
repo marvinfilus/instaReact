@@ -3,7 +3,8 @@
 	flex-direction:column;
 	justify-content:center;
 	text-align:center;
-	border: 1px solid black;
+background-color: #2a2a72;
+background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
 	width:100%;
 	height: 10vh;
 }

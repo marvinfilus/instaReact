@@ -5,7 +5,7 @@ import firebase from 'firebase'
 import '../Css/home.css'
 import '../Css/img.css'
 import Header from './Header';
-import ImgPost from './HomeMiddle';
+import ImgPost from './Imgpost';
 
 
 const that = this;
@@ -16,6 +16,7 @@ class Home extends Component {
 	constructor(){
 		super()
 		this.state = {
+			previewPic:"",
 			profilePic:"",
 			profilePicImg:"",
 			postedImg:[],
@@ -118,6 +119,15 @@ class Home extends Component {
 			    }
 			});
 	}
+
+	previewFile = (event) => {
+		let file = URL.createObjectURL(event.target.files[0])
+	    // var image = document.getElementById('output');
+	    console.log(String(file))
+		this.setState({ previewFile: file});
+		console.log(this.state.previewFile)
+	}
+
 	profileInfo = () => {
 		console.log('hello');
 		let uid = this.props.id;
@@ -282,6 +292,9 @@ class Home extends Component {
 					}
 				})
 	    		// console.log(that.state);
+	    		name = "";
+	    		location = "";
+	    		description = "";
     		});
 		});
 	}
@@ -311,23 +324,24 @@ class Home extends Component {
 						</div>
 					</header>
 					<div className="middle-div-home">
-						<div className="post-info">
-							<p> Name </p>
-							<input type="text" className="postName" name="postName" ref={(c)=> this.name = c}/>
-							<br/>
-							<p> Location </p>
-							<input type="text" className="postLocation" name="postLocation" ref={(c)=> this.location = c}/>
-							<br/>
-							<p> Description </p>
-							<textarea type="text" className="postDescription" name="postDescription" ref={(c)=> this.description = c}/>
-							<br/>
-							<input type='file' className="post-file" name="post-file" accept=" .jpg, .png,.jpeg " onChange={this.uploadPost.bind(this)} />
-							<br/>
+						<div className="post-info-div">
+							<div className="post-info">
+								<p> Name </p>
+								<input type="text" className="postName" name="postName" ref={(c)=> this.name = c}/>
+								<p> Location </p>
+								<input type="text" className="postLocation" name="postLocation" ref={(c)=> this.location = c}/>
+								<p> Description </p>
+								<textarea type="text" className="postDescription" name="postDescription" ref={(c)=> this.description = c}/>
+								<input type='file' className="post-file" name="post-file" accept=" .jpg, .png,.jpeg " onChange={this.previewFile.bind(this)} />
+							</div>
+							<div className="preview-div">
+								<img src={this.state.previewPic}/>
+							</div>
 						</div>
 						<div className="Imgpost">
-							{postedImg.map((img) => {
-								return <ImgPost key={img.id} img={img} />
-							})}
+							{ postedImg ? (postedImg.map((img) => {
+								return <ImgPost key={img.id} img={img} /> 
+							})) : null }
 						</div>
 					</div>
 				</section>
