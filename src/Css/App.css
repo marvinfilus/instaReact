@@ -1,6 +1,8 @@
 html{
   width: 100%;
   height: 100%;
+  background-color: #2a2a72;
+	background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
 }
 body{
   width: 100%;

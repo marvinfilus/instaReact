@@ -46,7 +46,7 @@ class App extends Component {
   createUser(data){
     this.setState({createdUser:{...data}})
     console.log(data);
-    let email = data.user;
+    let email = data.email;
     let password = data.pass;
     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
       // Handle Errors here.
@@ -79,7 +79,7 @@ class App extends Component {
     return (
       <Router>
           <div className="App">
-            <Header logOut={this.logOut.bind(this)}/> 
+            <Header logOut={this.logOut.bind(this)}/>
             <Route exact path="/" render={({match}) => (this.state.user.uid ? (<Redirect to={`/${this.state.user.uid}`}/>):(<Login logIn={this.logIn.bind(this)} createUser={this.createUser.bind(this)}/> ))} />
             <Route path ="/:uid" render={({match}) => <Home user={this.state.user} id={match.params.uid}/> } />
           </div>
@@ -89,4 +89,3 @@ class App extends Component {
 }
 
 export default App;
- 

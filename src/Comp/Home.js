@@ -24,7 +24,7 @@ class Home extends Component {
 			user:{}
 		}
 	}
-	
+
 
 	componentDidMount = (props) => {
 		const that = this;
@@ -38,7 +38,7 @@ class Home extends Component {
 		  	asArray:false,
 		  	then(data){
 		  		console.log(data);
-		  	
+
 			  		this.setState({
 			  			user:{...data},
 			  			profilePic:data.profilePic,
@@ -75,7 +75,7 @@ class Home extends Component {
 		var user = firebase.auth().currentUser;
 		if (user) {
 		  // console.log(user.uid);
-		  
+
 		} else {
 		  // No user is signed in.
 		}
@@ -91,14 +91,15 @@ class Home extends Component {
 		let uid = this.props.id;
 		console.log(this.props.id)
 		let profilePic = storageRef.child(uid);
-		profilePic.child('profilePic').getDownloadURL().then((url)=> {
+		profilePic.child('profilePic/' + 'profilePic').getDownloadURL().then((url)=> {
 			let string = String(url)
+			this.setState({ profilePic:string});
+			console.log(this.state.profilePic)
 			console.log(string);
 				base.update(`users/${uid}/pictures/`,{
 					profilePic:string
 				})
-				this.setState({ profilePic:url});
-				console.log(this.state.profilePic)
+
 			}).catch(function(error) {
 			  switch (error.code) {
 			    case 'storage/object-not-found':
@@ -315,9 +316,9 @@ class Home extends Component {
 				</nav>
 				<section className="section-home">
 					<header className="user-info-header">
-						<div className="header-div-home"> 
+						<div className="header-div-home">
 							<img className="img" src={this.state.profilePic}/>
-							<div className="change-profile-pic"> 
+							<div className="change-profile-pic">
 								<input type="file" className="file-id" name="file_name" accept=".jpg, .png, .jpeg" ref={(c)=> this.click = c} onChange={this.uploadProfile.bind(this)}/>
 								<img className="profilepicimg" src={this.state.profilePicImg} onClick={this.clickImg.bind(this)}/>
 							</div>
@@ -326,11 +327,11 @@ class Home extends Component {
 					<div className="middle-div-home">
 						<div className="post-info-div">
 							<div className="post-info">
-								<p> Name </p>
+								<p> Name of Picture </p>
 								<input type="text" className="postName" name="postName" ref={(c)=> this.name = c}/>
-								<p> Location </p>
+								<p> Location Of Picture </p>
 								<input type="text" className="postLocation" name="postLocation" ref={(c)=> this.location = c}/>
-								<p> Description </p>
+								<p> Description Of Picture </p>
 								<textarea type="text" className="postDescription" name="postDescription" ref={(c)=> this.description = c}/>
 								<input type='file' className="post-file" name="post-file" accept=" .jpg, .png,.jpeg " onChange={this.previewFile.bind(this)} />
 							</div>
@@ -340,7 +341,7 @@ class Home extends Component {
 						</div>
 						<div className="Imgpost">
 							{ postedImg ? (postedImg.map((img) => {
-								return <ImgPost key={img.id} img={img} /> 
+								return <ImgPost key={img.id} img={img} />
 							})) : null }
 						</div>
 					</div>
