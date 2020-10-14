@@ -1,23 +1,28 @@
 html{
-  width: 100%;
-  height: 100%;
-  background-color: #2a2a72;
-	background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+  /* width: 100%;
+  height: 100%; */
+  /* background-color: #2a2a72;
+	background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%); */
 }
 body{
+
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
 }
 
 #root{
+  min-height: 100vh;
   width: 100%;
-  height:100%;
+  /* height:100%; */
 }
 
 .App{
 	display: flex;
+  justify-content: center;
+  /* align-items: center; */
 	flex-direction: column;
  	width: 100%;
+  min-height: 100vh;
 }
 
 .post-info{

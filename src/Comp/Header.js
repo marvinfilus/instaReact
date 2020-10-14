@@ -7,22 +7,10 @@ import {app,base} from './rebase';
 import '../Css/header.css';
 
 class Header extends Component {
-	constructor(){
-		super()
-		this.state = {
-
-		}
-	}
-
-	componentDidMount(){
-
-	}
 
 	logOut(){
     	firebase.auth().signOut().then(function() {
-      	// Sign-out successful.
     	}).catch(function(error) {
-    	  // An error happened.
     	});
     }
 
@@ -36,7 +24,7 @@ class Header extends Component {
 						<li className="Header-li">Main</li>
 						<li className="Header-li">About</li>
 						<li className="Header-li">Settings</li>
-						<li className="Header-li" onClick={this.logOut.bind(this)}>Log Out</li>
+					<li className="Header-li" onClick={this.logOut.bind(this)}> <Link to="/">Log Out</Link> </li>
 					</ul>
 				</nav>
 			</div>

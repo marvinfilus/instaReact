@@ -6,81 +6,120 @@ import '../Css/home.css'
 import '../Css/img.css'
 import Header from './Header';
 import ImgPost from './Imgpost';
-
-
-const that = this;
-
-
+import PicAdd from './PicAdd';
 
 class Home extends Component {
 	constructor(){
 		super()
 		this.state = {
-			previewPic:"",
+			previewPic:{downloadURL:""},
 			profilePic:"",
 			profilePicImg:"",
 			postedImg:[],
+      show:false,
 			updated:false,
 			user:{}
 		}
 	}
 
-
 	componentDidMount = (props) => {
 		const that = this;
+    let posted = that.state.postedImg;
+    console.log(posted)
 		let profilePicImg = this.state.profilePicImg;
-		var user = firebase.auth().currentUser;
-		console.log(this.props)
-		if (user) {
-		  console.log(user.uid);
-		  base.fetch(`users/${this.props.id}`,{
-		  	context:this,
-		  	asArray:false,
-		  	then(data){
-		  		console.log(data);
+    firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      // console.log(user)
+      base.fetch(`users/${user.uid}`,{
+        context:this,
+        asArray:false,
+        then(data){
+          // console.log(data);
+          if(data.postedImg){ that.setState({ postedImg: data.postedImg})} else { that.setState({postedImg:[]}) }
+          that.setState({
+      			profilePic:data.profilePic,
+            user: {...data}
+          });
+        }
+      })
+        console.log(that.state);
+    } else {
+      // No user is signed in.
+    }
+  })
 
-			  		this.setState({
-			  			user:{...data},
-			  			profilePic:data.profilePic,
-			  			postedImg:data.postedImg
-			  		});
-		  		}
-		  	})
-		} else {
-		  // No user is signed in.
-		}
-		if(profilePicImg === ""){
-			that.profileInfo();
-			// console.log('hello')
-			var storageRef = firebase.storage().ref();
-			let profile = storageRef.child('/profile/');
-			// var uploadTask = profile.put('../img/profilepic.jpg');
-		}
-		if(that.state.profilePic === ""){
-			that.getImage();
-		} else{
-			// console.log(that.state)
-		}
+    $('.post-info-div').hide();
+    $('.add-photo').on('click', ()=> {
+      $('.post-info-div').show();
+    });
+    $('.add-post').on('click',()=>{
+      $('.post-info-div').hide();
+    })
 
+		  // base.fetch(`users/${this.state.user.uid}`,{
+		  // 	context:this,
+		  // 	asArray:false,
+		  // 	then(data){
+		  // 		console.log(data);
+      //
+			//   		this.setState({
+			//   			user:{...data},
+			//   			profilePic:data.profilePic,
+			//   			postedImg:data.postedImg
+			//   		});
+		  // 		}
+		  // 	})
+
+		// if(profilePicImg === ""){
+		// 	that.profileInfo();
+		// }
+		// if(this.state.profilePic === ""){
+		// 	that.getImage();
+		// }
 	}
 
-	componentDidUpdate(){
-		// console.log(this.state.user);
+	// componentDidUpdate(){
+	// 	// console.log(this.state.user);
+  //
+	// 	if(this.state.updated === false){
+	// 		this.setUser();
+	// 		this.setState({ updated : true});
+	// 		// console.log(this.state)
+	// 	}
+  //
+	// 	// console.log(this.state)
+	// }
 
-		if(this.state.updated === false){
-			this.setUser();
-			this.setState({ updated : true});
-			// console.log(this.state)
-		}
-		var user = firebase.auth().currentUser;
-		if (user) {
-		  // console.log(user.uid);
+  addPost = () => {
+    let post = this.state.previewPic;
+    let uid = this.state.user.uid;
+    let posted = this.state.postedImg;
+    posted.push(post);
 
-		} else {
-		  // No user is signed in.
-		}
-		// console.log(this.state)
-	}
+    if(post !== {}){
+      this.setState({ postedImg:posted , previewPic : {downloadURL: "#"} });
+      console.log(posted)
+      base.update(`users/${uid}`,{
+        data : {
+          postedImg: posted
+        }
+      });
+      // console.log(document.getElementsByClassName('post-info-div'))
+
+    }
+  }
+
+  delPost= () => {
+    let post = this.state.previewPic;
+    let uid = this.state.user.uid;
+    console.log(post);
+    this.setState({ previewPic : {downloadURL: "#"} })
+  }
+
+  clicked = () => {
+    this.setState({ show : true })
+
+  }
 
 	clickImg = (event) => {
 		this.click.click();
@@ -88,8 +127,8 @@ class Home extends Component {
 
 	getImage =() => {
 		var storageRef = firebase.storage().ref();
-		let uid = this.props.id;
-		console.log(this.props.id)
+		let uid = this.state.uid;
+		console.log(this.state.uid)
 		let profilePic = storageRef.child(uid);
 		profilePic.child('profilePic/' + 'profilePic').getDownloadURL().then((url)=> {
 			let string = String(url)
@@ -131,7 +170,7 @@ class Home extends Component {
 
 	profileInfo = () => {
 		console.log('hello');
-		let uid = this.props.id;
+		let uid = this.state.uid;
 		var storageRef = firebase.storage()
 		let profile = storageRef.ref('profilePic');
 		profile.getDownloadURL().then((downloadURL)=>{
@@ -170,7 +209,7 @@ class Home extends Component {
 	}
 		uploadProfile = (event) => {
 		const that = this;
-		let uid = this.props.user.uid;
+		let uid = this.state.user.uid;
 	    var input = event.target;
 	    let file = input.files[0];
 	    var storageRef = firebase.storage().ref();
@@ -236,7 +275,7 @@ class Home extends Component {
 
 	uploadPost = (event) => {
 		var input = event.target;
-		let uid = this.props.id;
+		let uid = this.state.user.uid;
 		let name = this.name.value;
 		let location = this.location.value;
 		let description = this.description.value;
@@ -247,10 +286,11 @@ class Home extends Component {
 		console.log(uid);
 		// Upload file and metadata to the object 'images/mountains.jpg'
 		var uploadTask = postedPic.child('posts/' + file.name).put(file);
+    console.log(file.name);
 		// Listen for state changes, errors, and completion of the upload.
 		uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
 		  (snapshot) =>  {
-		  	let that = this;
+
 		  	// console.log(that.state)
 		    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
 		    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -277,22 +317,15 @@ class Home extends Component {
 		  }
 		}, () => {
 			let that = this;
-			let uid = this.props.id;
+			let uid = this.state.user.uid;
 			let posted = this.state.postedImg;
-			console.log(that.state)
+			console.log(that.state);
 		  // Upload completed successfully, now we can get the download URL
 			uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) =>  {
 				let postedO = {name,location,description, file, downloadURL}
-				posted.push(postedO);
-				that.setState({ postedImg:posted});
-				console.log(posted)
-
-				base.update(`users/${uid}`,{
-					data : {
-						postedImg: posted
-					}
-				})
-	    		// console.log(that.state);
+        this.setState({ previewPic : postedO})
+			// this.postPic(postedO);
+	    		console.log(that.state);
 	    		name = "";
 	    		location = "";
 	    		description = "";
@@ -300,20 +333,14 @@ class Home extends Component {
 		});
 	}
 
-	render(){
 
-		let user = this.state.user;
+	render(){
+    let user = this.state.user;
 		let postedImg = this.state.postedImg;
+    let show = this.state.show;
+    let previewPic = this.state.previewPic;
 		return (
 			<div className="container-home">
-				<nav className="nav-home">
-					<ul>
-						<li className=""> hello</li>
-						<li className=""> hello</li>
-						<li className=""> hello</li>
-						<li className=""> hello</li>
-					</ul>
-				</nav>
 				<section className="section-home">
 					<header className="user-info-header">
 						<div className="header-div-home">
@@ -325,20 +352,26 @@ class Home extends Component {
 						</div>
 					</header>
 					<div className="middle-div-home">
-						<div className="post-info-div">
-							<div className="post-info">
-								<p> Name of Picture </p>
-								<input type="text" className="postName" name="postName" ref={(c)=> this.name = c}/>
-								<p> Location Of Picture </p>
-								<input type="text" className="postLocation" name="postLocation" ref={(c)=> this.location = c}/>
-								<p> Description Of Picture </p>
-								<textarea type="text" className="postDescription" name="postDescription" ref={(c)=> this.description = c}/>
-								<input type='file' className="post-file" name="post-file" accept=" .jpg, .png,.jpeg " onChange={this.previewFile.bind(this)} />
-							</div>
-							<div className="preview-div">
-								<img src={this.state.previewPic}/>
-							</div>
+            <div className="post-info-div">
+							<div className="post-info ">
+                <p> Name of Picture </p>
+                <input type="text" className="postName" name="postName" ref={(c)=> this.name = c} />
+                <p> Location Of Picture </p>
+                <input type="text" className="postLocation" name="postLocation" ref={(c)=> this.location = c} />
+                <p> Description Of Picture </p>
+                <textarea type="text" className="postDescription" name="postDescription" ref={(c)=> this.description = c}/>
+                <input type='file' className="post-file" name="post-file" accept=" .jpg, .png,.jpeg " onChange={this.uploadPost.bind(this)} />
+              </div>
+              <div className="preview-div">
+                {previewPic ? (<p> {previewPic.location}</p> ) : null }
+                <img src={previewPic.downloadURL} className="preview-pic" alt="Preview Image"/>
+                {previewPic ? (<p> {previewPic.name}</p> ) : null }
+                {previewPic ? (<p> {previewPic.description}</p> ) : null }
+                <button className="add-post" onClick={this.addPost} > Add Post </button>
+                <button className="delete-post" onClick={this.delPost}> Delete Post </button>
+              </div>
 						</div>
+						<button className="add-photo" onClick={this.clicked.bind(this)}> Add New Photo </button>
 						<div className="Imgpost">
 							{ postedImg ? (postedImg.map((img) => {
 								return <ImgPost key={img.id} img={img} />

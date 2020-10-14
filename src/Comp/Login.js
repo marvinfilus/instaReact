@@ -57,11 +57,12 @@ class Login extends Component {
 		let fname = this.refs.fname.value;
 		let lname = this.refs.lname.value;
 		let birth = this.refs.birth.value;
+		let postedImg = [];
 		let data = {};
 		console.log(email,pass, pass2);
 
 		if(email && pass && pass2 && fname && lname && birth ){
-			data =  {email,pass,fname,lname,birth};
+			data =  {email,pass,fname,lname,birth,postedImg};
 			this.props.createUser(data);
 		}
 	}
@@ -69,6 +70,11 @@ class Login extends Component {
 	render(){
 		return(
 			<div className="div-login">
+				<header className="header-login">
+					<div>
+						<h1> InstaReact </h1>
+					</div>
+				</header>
 				<div className="card-container-div">
 					<div className="card-div">
 						<form className="login-card-form card-form-login" onSubmit={this.logIn.bind(this)}>

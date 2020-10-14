@@ -19,7 +19,6 @@ class App extends Component {
   }
 
   componentDidMount(){
-    const that = this;
     firebase.auth().onAuthStateChanged((user)=> {
       if (user) {
        this.setState({ user: {email: user.email, uid:user.uid, postedImg:[]}});
@@ -38,13 +37,15 @@ class App extends Component {
             // console.log(this.state)
           }
         })
+      } else {
+        this.setState({ user :{} });
       }
     });
 
   }
 
   createUser(data){
-    this.setState({createdUser:{...data}})
+    this.setState({createdUser:{...data, postedImg:[]}})
     console.log(data);
     let email = data.email;
     let password = data.pass;
@@ -63,7 +64,7 @@ class App extends Component {
       // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
-      // ...
+      console.log(errorCode, errorMessage);
     });
   }
 
@@ -79,7 +80,7 @@ class App extends Component {
     return (
       <Router>
           <div className="App">
-            <Header logOut={this.logOut.bind(this)}/>
+            {this.state.user.uid ? (<Header logOut={this.logOut.bind(this)}/>) : null }
             <Route exact path="/" render={({match}) => (this.state.user.uid ? (<Redirect to={`/${this.state.user.uid}`}/>):(<Login logIn={this.logIn.bind(this)} createUser={this.createUser.bind(this)}/> ))} />
             <Route path ="/:uid" render={({match}) => <Home user={this.state.user} id={match.params.uid}/> } />
           </div>
